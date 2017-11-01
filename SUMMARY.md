@@ -7,6 +7,7 @@
 * [启动说明](qi-dong-shuo-ming.md)
 * [私有仓库部署](si-you-cang-ku-bu-shu.md)
 * [缩减docker的方法](suo-jian-docker-de-fang-fa.md)
+* [book.json](bookjson.md)
 
 ## Basin平台研发日志
 
