@@ -1,0 +1,67 @@
+digraph G{
+    rankdir = TD;
+
+    subgraph cSubscribe{
+        node [shape=box];
+        {
+            rankdir = LR;
+            subscribe_project [label="订阅项目"];
+            subscribe_service [label="订阅服务" shape=polygon, sides=6, peripheries=2, color=lightblue, style=filled];
+            subscribe_project -> subscribe_service [label="启动"];
+        }
+    }
+
+    subgraph cBidspy{
+        label="招标公告订阅";
+        color=blue;
+        rankdir = LR;
+
+        // 控制流
+        node [shape=box, fontname="SimSun" size="20,20"];
+        {
+            spider_service [label="爬虫服务"];
+            //extraction_service [shape=record label="<x>|<f>抽取服务|<y>"];
+            extraction_service [label="抽取服务"];
+            pipeline_service [label="数据管道服务"];
+            push_service [label="推送服务"];
+
+            subscribe_service -> spider_service [label="爬取任务" style=dotted];
+            //subscribe_service -> extraction_service [label="抽取任务" style=dotted];
+            subscribe_service -> pipeline_service [label="抽取任务" style=dotted];
+            subscribe_service -> push_service [label="订阅信息" style=dotted];
+        }
+        // 端到端 
+        node [shape=ellipse, fontname="SimSun", size="20,20"]
+        {
+            data_source [label="招标网站"];
+            target_user [label="订阅用户"];
+
+            data_source -> spider_service [label="爬取页面"];
+            push_service -> target_user [label="推送订阅内容"];
+        }
+
+    }
+
+    subgraph cBasinSpace{
+        label="BasinSpace";
+        randir = LR;
+
+        // 存取
+        node [shape=box];
+        {
+            storage_service [label="存储服务" shape=box color=green style=filled];
+
+            spider_service -> storage_service [label="顺序保存"];
+            storage_service -> pipeline_service [label="获取原始数据流"];
+            pipeline_service -> storage_service [label="抽取结果"];
+            pipeline_service -> extraction_service [];
+            extraction_service -> pipeline_service [];
+            //storage_service -> extraction_service [label="获取原始数据流"];
+            //extraction_service -> storage_service [label="抽取结果"];
+            storage_service -> push_service [label="拉取抽取结果"];
+        }
+    }
+
+
+    //{rank = same; subscribe_service; extraction_service; storage_service;}
+}
